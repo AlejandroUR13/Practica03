@@ -1,0 +1,58 @@
+import heapq
+import time
+
+class Grafo:
+    def __init__(self):
+        self.vertex = set()
+        self.AdamC = {} #aristas :)
+        self.distancias = {}
+
+    def add_vertex(self, valor):
+        self.vertex.add(valor)
+        self.distancias[valor] = float('inf')
+        self.AdamC[valor] = []
+
+    def add_edge(self, desde, hacia, peso):
+        self.AdamC[desde].append((hacia, peso))
+
+    def dijkstra(self, inicio):
+        self.distancias = {vertex: float('inf') for vertex in self.vertex}
+        self.distancias[inicio] = 0
+        heap = [(0, inicio)]
+
+        while heap:
+            (dist, actual) = heapq.heappop(heap)
+
+            if dist > self.distancias[actual]:
+                continue
+
+            for vecino, peso in self.AdamC[actual]:
+                nueva_distancia = dist + peso
+
+                if nueva_distancia < self.distancias[vecino]:
+                    self.distancias[vecino] = nueva_distancia
+                    heapq.heappush(heap, (nueva_distancia, vecino))
+
+def main():
+    grafo = Grafo()
+    grafo.add_vertex('A')
+    grafo.add_vertex('B')
+    grafo.add_vertex('C')
+    grafo.add_vertex('D')
+
+    grafo.add_edge('A', 'B', 30)
+    grafo.add_edge('B', 'C', 48)
+    grafo.add_edge('C', 'D', 27)
+    grafo.add_edge('A', 'D', 72)
+
+    inicio = 'A'
+
+    start_time = time.time()
+    grafo.dijkstra(inicio)
+    end_time = time.time()
+
+    print(f"Distancias mínimas desde el vértice {inicio}: {grafo.distancias}")
+    print(f"Tiempo de ejecución: {end_time - start_time} segundos")
+
+if __name__ == "__main__":
+    main()
